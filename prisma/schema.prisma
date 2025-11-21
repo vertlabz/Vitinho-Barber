@@ -20,7 +20,7 @@ model Client {
   id        String   @id @default(uuid())
   name      String
   phone     String?
-  email     String?
+  email     String?  @unique
   createdAt DateTime @default(now())
   appointments Appointment[]
 }
@@ -35,10 +35,11 @@ model Service {
 }
 
 model Staff {
-  id        String   @id @default(uuid())
-  name      String
-  active    Boolean  @default(true)
+  id           String   @id @default(uuid())
+  name         String
+  active       Boolean  @default(true)
   appointments Appointment[]
+  workingHours StaffWorkingHours[]
 }
 
 model Appointment {
@@ -54,4 +55,13 @@ model Appointment {
   status     String   @default("pending")
   notes      String?
   createdAt  DateTime @default(now())
+}
+
+model StaffWorkingHours {
+  id        String  @id @default(uuid())
+  staff     Staff   @relation(fields: [staffId], references: [id])
+  staffId   String
+  weekday   Int     // 0 = Sunday ... 6 = Saturday
+  startTime String  // format 'HH:MM' (local time of barbearia)
+  endTime   String  // format 'HH:MM'
 }
